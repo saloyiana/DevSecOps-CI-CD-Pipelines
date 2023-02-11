@@ -9,7 +9,7 @@ DevSecOps—short for development, security, and operations—automates the i
 - **Dynamic Application Security Testing (DAST):** To analyze the application when it runs and tries to hack from outside like a hacker. 
 
 # Automated implementation of the Devsecops Practices via CI/CD Pipelines
-![alt text](https://github.com/saloyiana/DevSecOps-CI-CD-Pipelines/blob/main/cicd-flow.png)   
+![alt text](https://github.com/saloyiana/DevSecOps-CI-CD-Pipelines/blob/main/devsecops-cicd-flow.png)   
 
 # References
 - https://digitalvarys.com/approaches-to-automate-security-testing-in-cicd-pipelines/   
