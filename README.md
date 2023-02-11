@@ -1,3 +1,4 @@
+![alt text](https://www.novetta.com/wp-content/uploads/2020/10/Screen-Shot-2020-10-08-at-9.53.04-AM.png)
 # What is DevSecOps: 
 DevSecOps—short for development, security, and operations—automates the integration of security at every phase of the software development lifecycle, from initial design through integration, testing, deployment, and software delivery.
 
