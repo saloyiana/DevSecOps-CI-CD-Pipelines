@@ -1,14 +1,14 @@
 # What is DevSecOps: 
 DevSecOps—short for development, security, and operations—automates the integration of security at every phase of the software development lifecycle, from initial design through integration, testing, deployment, and software delivery.
 
-# Devsecops Common Practices
+# DevSecOps Common Practices
 - **Software Composition Analysis (SCA):** To analyze, manage and scan all open-source components to check for policy and license compliance, security risks, and version updates. 
 - **Static Application Security Testing (SAST):** To analyze the codebase and design the rulesets that is to indicate the security vulnerabilities especially in nonrunning state of the application.
 - **Container Image Scan:** To identify the vulnerable version of this component in the images being deployed as well as to monitor container hosts for vulnerabilities and suspicious activities.
 - **Container Image Tag Sign:** To provides a means of validating where a container image came from, checking that the image has not been tampered with.
 - **Dynamic Application Security Testing (DAST):** To analyze the application when it runs and tries to hack from outside like a hacker. 
 
-# Automated implementation of the Devsecops Practices via CI/CD Pipelines
+# Automated implementation of the DevSecOps Practices via CI/CD Pipelines
 ![alt text](https://github.com/saloyiana/DevSecOps-CI-CD-Pipelines/blob/main/devsecops-cicd-flow.png)   
 
 # References
