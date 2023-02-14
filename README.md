@@ -12,16 +12,31 @@ DevSecOps—short for development, security, and operations—automates the i
 ![alt text](https://github.com/saloyiana/DevSecOps-CI-CD-Pipelines/blob/main/devsecops-cicd-flow.png)   
 
 # Tools Implementation Examples
+## Image Sacn - 'trivy'   
+- Install the tool      
+````
+sudo apt-get install rpm   
+wget https://github.com/aquasecurity/trivy/releases/download/v0.16.0/trivy_0.16.0_Linux-64bit.deb   
+sudo dpkg -i trivy_0.16.0_Linux-64bit.deb
+```   
+- Run the scan aginst default polices:    
+```
+trivy image --exit-code 0 --severity LOW,MEDIUM $IMAGE:$TAG    
+trivy image --exit-code 1 --severity HIGH,CRITICAL $IMAGE:$TAG     
+```
+
 ## Manifests Sacn - 'kubescape'   
-Install the tool      
+- Install the tool      
 `curl -s https://raw.githubusercontent.com/kubescape/kubescape/master/install.sh | /bin/bash`   
-Run the scan aginst default polices:    
+- Run the scan aginst default polices:    
 `kubescape scan </path/to/directory>`   
 ## Manifests Sacn - 'checkov'
-Install the tool   
+- Install the tool   
 `pip3 install checkov`   
-Run the scan aginst default polices:   
+- Run the scan aginst default polices:   
 `bash -c 'find -iname chart.yaml' | xargs -n1 -I% bash -c " dirname %" | xargs -n1 -I% bash -c "helm template % > %.yaml && checkov -f %.yaml --framework kubernetes || true" --`   
+
+
 # References
 - https://digitalvarys.com/approaches-to-automate-security-testing-in-cicd-pipelines/   
 - https://www.g2.com/categories/software-composition-analysis   
