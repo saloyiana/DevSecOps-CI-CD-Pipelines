@@ -12,6 +12,17 @@ DevSecOps—short for development, security, and operations—automates the i
 ![alt text](https://github.com/saloyiana/DevSecOps-CI-CD-Pipelines/blob/main/devsecops-cicd-flow.png)   
 
 # Tools Implementation Examples
+
+## SCA & SAST - 'mend'    
+- **Install the tool**      
+```
+sudo curl "https://downloads.mend.io/ws-cli/master/latest/ws-cli-linux-amd64/ws" -o "/usr/local/bin/ws" &&\
+   sudo chmod +x "/usr/local/bin/ws"
+```
+- **Run the scan aginst default polices:**    
+-  in the root directory of your project:     
+`ws scan`
+
 ## Image Sacn - 'trivy'   
 - **Install the tool**      
 ````
