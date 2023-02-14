@@ -12,16 +12,16 @@ DevSecOps—short for development, security, and operations—automates the i
 ![alt text](https://github.com/saloyiana/DevSecOps-CI-CD-Pipelines/blob/main/devsecops-cicd-flow.png)   
 
 # Tools Implementation Examples
-## Manifests Sacn - 'kubescape'
-Install the tool   
-`curl -s https://raw.githubusercontent.com/kubescape/kubescape/master/install.sh | /bin/bash`
-Run the scan aginst default polices:   
-`kubescape scan </path/to/directory>`
+## Manifests Sacn - 'kubescape'   
+Install the tool      
+`curl -s https://raw.githubusercontent.com/kubescape/kubescape/master/install.sh | /bin/bash`   
+Run the scan aginst default polices:    
+`kubescape scan </path/to/directory>`   
 ## Manifests Sacn - 'checkov'
 Install the tool   
-`pip3 install checkov`
+`pip3 install checkov`   
 Run the scan aginst default polices:   
-`bash -c 'find -iname chart.yaml' | xargs -n1 -I% bash -c " dirname %" | xargs -n1 -I% bash -c "helm template % > %.yaml && checkov -f %.yaml --framework kubernetes || true" --`
+`bash -c 'find -iname chart.yaml' | xargs -n1 -I% bash -c " dirname %" | xargs -n1 -I% bash -c "helm template % > %.yaml && checkov -f %.yaml --framework kubernetes || true" --`   
 # References
 - https://digitalvarys.com/approaches-to-automate-security-testing-in-cicd-pipelines/   
 - https://www.g2.com/categories/software-composition-analysis   
