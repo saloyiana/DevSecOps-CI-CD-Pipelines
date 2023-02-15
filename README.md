@@ -25,7 +25,7 @@ sudo curl "https://downloads.mend.io/ws-cli/master/latest/ws-cli-linux-amd64/ws"
 
 ## Image Sacn - 'trivy'   
 - **Install the tool**      
-````
+```
 sudo apt-get install rpm   
 wget https://github.com/aquasecurity/trivy/releases/download/v0.16.0/trivy_0.16.0_Linux-64bit.deb   
 sudo dpkg -i trivy_0.16.0_Linux-64bit.deb
