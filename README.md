@@ -20,8 +20,10 @@ sudo curl "https://downloads.mend.io/ws-cli/master/latest/ws-cli-linux-amd64/ws"
    sudo chmod +x "/usr/local/bin/ws"
 ```
 - **Run the scan aginst default polices:**    
--  in the root directory of your project:     
-`ws scan`
+```
+# In the root directory of your project:     
+ws scan
+```
 
 ## Image Sacn - 'trivy'   
 - **Install the tool**      
