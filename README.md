@@ -16,8 +16,9 @@ DevSecOps—short for development, security, and operations—automates the i
 ## SCA & SAST - 'mend'    
 - **Install the tool**      
 ```
-sudo curl "https://downloads.mend.io/ws-cli/master/latest/ws-cli-linux-amd64/ws" -o "/usr/local/bin/ws" \
-   sudo chmod +x "/usr/local/bin/ws"
+sudo curl "https://downloads.mend.io/ws-cli/master/latest/ws-cli-linux-amd64/ws" \
+   -o "/usr/local/bin/ws" \
+     sudo chmod +x "/usr/local/bin/ws"
 ```
 - **Run the scan aginst default polices:**    
 ```
