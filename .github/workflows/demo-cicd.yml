@@ -16,7 +16,7 @@ env:
   Image: 'saloyiana/demo-app'
   Tag: 'v1.0.0'
   ProjectName: 'demo-app'
-  HelmchartPath: 'charts/demo-app'
+  HelmchartPath: 'chart/demo-app'
 
 
 jobs:
