@@ -4,11 +4,11 @@ name: Demo
 
 # Controls when the workflow will run
 on:
-  # Auto Triggers
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+#   # Auto Triggers
+#   push:
+#     branches: [ "main" ]
+#   pull_request:
+#     branches: [ "main" ]
   # Manual Trigger
   workflow_dispatch:
 
@@ -17,51 +17,101 @@ env:
   Tag: ''
   ProjectName: ''
   HelmchartPath: ''
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+
+
 jobs:
   # This workflow contains a single job called "build"
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ["3.7", "3.8", "3.9", "3.10"]
+  
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
-      - name: build 
-        run: echo "here we build the project"
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v4
+        with:
+          python-version: ${{ matrix.python-version }}
+  
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8 pytest
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-      # Runs a set of commands using the runners shell
-      - name: run unit test
-        run: echo test your project.
-
+        #  to lint code
+#       - name: Lint with flake8
+#         run: |
+#           # stop the build if there are Python syntax errors or undefined names
+#           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+#           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
+#           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+      - name: Test with pytest
+        run: |
+          # pytest
+           echo "testing"
+ 
       # SAST
-      - name: sast
-        run: echo test your project.
-      # Dependenies check
       - name: sca
-        run: echo test your project.
-        
+        run: |
+          echo "install mend" 
+          sudo curl "https://downloads.mend.io/ws-cli/master/latest/ws-cli-linux-amd64/ws" \
+            -o "/usr/local/bin/ws" 
+          sudo chmod +x "/usr/local/bin/ws"
+          echo "run scan"
+          ws scan
+          
+      # Dependenies check
+      - name: sast
+        run: |
+          echo "we can use sonarqube" 
+          echo "for more security" 
+
       # Build image
       - name: build image
-        run: docker build -f Dockerfile -t $Image:$Tag . 
+        run: docker build -f Dockerfile -t ${{ env.Image }}:${{ env.Tag }} . 
 
       # Image scan
       - name: image scan
-        run: docker build -f Dockerfile -t $Image:$Tag . 
+        run: |
+          echo "install trivy" 
+          sudo apt-get install rpm   
+          wget https://github.com/aquasecurity/trivy/releases/download/v0.16.0/trivy_0.16.0_Linux-64bit.deb   
+          sudo dpkg -i trivy_0.16.0_Linux-64bit.deb
+          echo "run scan" 
+          trivy image --exit-code 0 --severity LOW,MEDIUM ${{ env.Image }}:${{ env.Tag }}    
+          trivy image --exit-code 1 --severity HIGH,CRITICAL ${{ env.Image }}:${{ env.Tag }}     
+  
       # Manifests scan
       - name: manifests scan
-        run: docker build -f Dockerfile -t $Image:$Tag . 
+        run: |
+          echo "install checkov"
+          pip3 install checkov
+          echo "scan"
+          helm template ${{ env.HelmchartPath }} > for-checkov-scan.yaml   
+          checkov -f for-checkov-scan.yaml --framework kubernetes --check MEDIUM --check HIGH --exit-code 0   
+          checkov -f for-checkov-scan.yaml --framework kubernetes --check MEDIUM --check HIGH --exit-code 1    
 
       # Sign image prepration
       - name: upload key
         run: |
           docker login -u -p 
-          docker push -t $Image:$Tag
-
+          docker push -t ${{ env.Image }}:${{ env.Tag }}
+  
+      # Docker login
+      - name: Log in to Docker Hub
+        uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+  
       # Push image
       - name: push image
         run: |
           docker login -u -p 
-          echo -c $Passphrase | docker sign -t $Image:$Tag
+          echo -c $Passphrase | docker sign -t ${{ env.Image }}:${{ env.Tag }}
   deploy:
     runs-on: ubuntu-latest
     steps:
@@ -71,18 +121,18 @@ jobs:
       # project deploy to test
       - name: project deploy
         run: |
-          helm upgarde --wait --install $ProjectName $ &&\
-            --set image=$Image --set image.tag=$Tag -n $Project -n test-env 
+          helm upgarde --wait --install ${{ env.ProjectName }} ${{ env.HelmchartPath }}\
+            --set image=${{ env.Image }} --set image.tag=${{ env.Tag }} -n test-env 
 
       # DAST
       - name: dast
-        run: docker build -f Dockerfile -t $Image:$Tag . 
+        run: echo "run dast" 
       # Manifests scan
       - name: performance test
-        run: docker build -f Dockerfile -t $Image:$Tag . 
+        run: echo "run test"  
         
       # project deploy to prod
       - name: project deploy
         run: |
-          helm upgarde --wait --install $ProjectName $HelmchartPath &&\
-            --set image=$Image --set image.tag=$Tag -n prod-env 
+          helm upgarde --wait --install ${{ env.ProjectName }} ${{ env.HelmchartPath }} \
+            --set image=${{ env.Image }} --set image.tag=${{ env.Tag }} -n prod-env 
