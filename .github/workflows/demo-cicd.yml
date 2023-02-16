@@ -13,10 +13,10 @@ on:
   workflow_dispatch:
 
 env:
-  Image: 'Snyk Demo'
-  Tag: ''
-  ProjectName: ''
-  HelmchartPath: ''
+  Image: 'saloyiana/demo-app'
+  Tag: 'v1.0.0'
+  ProjectName: 'demo-app'
+  HelmchartPath: 'charts/demo-app'
 
 
 jobs:
@@ -119,10 +119,27 @@ jobs:
       - uses: actions/checkout@v3
 
       # project deploy to test
-      - name: project deploy
+#       - name: project deploy
+#         run: |
+#           helm upgarde --wait --install ${{ env.ProjectName }} ${{ env.HelmchartPath }} \
+#             --set image=${{ env.Image }} --set image.tag=${{ env.Tag }} -n test-env 
+
+      - name: update tag
         run: |
-          helm upgarde --wait --install ${{ env.ProjectName }} ${{ env.HelmchartPath }}\
-            --set image=${{ env.Image }} --set image.tag=${{ env.Tag }} -n test-env 
+          sed -i 's/repository:.*/repository:\ ${{ env.Image }}/g' ${{ env.HelmchartPath }}/values.yaml
+          sed -i 's/tag:.*/tag:\ "${{ env.Tag }}"/g' ${{ env.HelmchartPath }}/values.yaml
+          
+      - name: GIT commit and push all changed files
+        env: 
+          CI_COMMIT_MESSAGE: release with tag ${{ env.Tag }}
+          CI_COMMIT_AUTHOR: Continuous Integration
+        run: |
+          git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
+          git config --global user.email "username@users.noreply.github.com"
+          git checkout origin/test-env
+          git add ${{ env.HelmchartPath }}/values.yaml
+          git commit -m "${{ env.CI_COMMIT_MESSAGE }}"
+          git push
 
       # DAST
       - name: dast
@@ -132,7 +149,23 @@ jobs:
         run: echo "run test"  
         
       # project deploy to prod
-      - name: project deploy
+#       - name: project deploy
+#         run: |
+#           helm upgarde --wait --install ${{ env.ProjectName }} ${{ env.HelmchartPath }} \
+#             --set image=${{ env.Image }} --set image.tag=${{ env.Tag }} -n prod-env 
+      - name: update tag
         run: |
-          helm upgarde --wait --install ${{ env.ProjectName }} ${{ env.HelmchartPath }} \
-            --set image=${{ env.Image }} --set image.tag=${{ env.Tag }} -n prod-env 
+          sed -i 's/repository:.*/repository:\ ${{ env.Image }}/g' ${{ env.HelmchartPath }}/values.yaml
+          sed -i 's/tag:.*/tag:\ "${{ env.Tag }}"/g' ${{ env.HelmchartPath }}/values.yaml
+          
+      - name: GIT commit and push all changed files
+        env: 
+          CI_COMMIT_MESSAGE: release with tag ${{ env.Tag }}
+          CI_COMMIT_AUTHOR: Continuous Integration
+        run: |
+          git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
+          git config --global user.email "username@users.noreply.github.com"
+          git checkout origin/prod-env
+          git add ${{ env.HelmchartPath }}/values.yaml
+          git commit -m "${{ env.CI_COMMIT_MESSAGE }}"
+          git push
