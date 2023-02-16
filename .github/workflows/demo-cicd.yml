@@ -1,0 +1,88 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Demo
+
+# Controls when the workflow will run
+on:
+  # Auto Triggers
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+  # Manual Trigger
+  workflow_dispatch:
+
+env:
+  Image: 'Snyk Demo'
+  Tag: ''
+  ProjectName: ''
+  HelmchartPath: ''
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      - name: build 
+        run: echo "here we build the project"
+
+      # Runs a set of commands using the runners shell
+      - name: run unit test
+        run: echo test your project.
+
+      # SAST
+      - name: sast
+        run: echo test your project.
+      # Dependenies check
+      - name: sca
+        run: echo test your project.
+        
+      # Build image
+      - name: build image
+        run: docker build -f Dockerfile -t $Image:$Tag . 
+
+      # Image scan
+      - name: image scan
+        run: docker build -f Dockerfile -t $Image:$Tag . 
+      # Manifests scan
+      - name: manifests scan
+        run: docker build -f Dockerfile -t $Image:$Tag . 
+
+      # Sign image prepration
+      - name: upload key
+        run: |
+          docker login -u -p 
+          docker push -t $Image:$Tag
+
+      # Push image
+      - name: push image
+        run: |
+          docker login -u -p 
+          echo -c $Passphrase | docker sign -t $Image:$Tag
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+
+      # project deploy to test
+      - name: project deploy
+        run: |
+          helm upgarde --wait --install $ProjectName $ &&\
+            --set image=$Image --set image.tag=$Tag -n $Project -n test-env 
+
+      # DAST
+      - name: dast
+        run: docker build -f Dockerfile -t $Image:$Tag . 
+      # Manifests scan
+      - name: performance test
+        run: docker build -f Dockerfile -t $Image:$Tag . 
+        
+      # project deploy to prod
+      - name: project deploy
+        run: |
+          helm upgarde --wait --install $ProjectName $HelmchartPath &&\
+            --set image=$Image --set image.tag=$Tag -n prod-env 
