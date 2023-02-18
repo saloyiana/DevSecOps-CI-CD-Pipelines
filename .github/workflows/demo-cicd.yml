@@ -128,9 +128,8 @@ jobs:
 
       - name: update tag
         run: |
-          find . -name "*" -exec sed -i "s/repository:.*/repository:\ ${{ env.Image }}/g" {} +
-          # sed -i 's/repository:.*/repository:\ ${{ env.Image }}/' ${{ env.HelmchartPath }}/values.yaml
-          # sed -i 's/tag:.*/tag:\ "${{ env.Tag }}"/' ${{ env.HelmchartPath }}/values.yaml
+          sed -i 's/repository:.*/repository:\ "saloyiana\/demo-app"/g' ${{ env.HelmchartPath }}/values.yaml
+          sed -i 's/tag:.*/tag:\ "${{ env.Tag }}"/g' ${{ env.HelmchartPath }}/values.yaml
     
       - name: GIT commit and push all changed files
         env: 
@@ -158,7 +157,7 @@ jobs:
 #             --set image=${{ env.Image }} --set image.tag=${{ env.Tag }} -n prod-env 
       - name: update tag
         run: |
-          sed -i 's/repository:.*/repository:\ ${{ env.Image }}/g' ${{ env.HelmchartPath }}/values.yaml
+          sed -i 's/repository:.*/repository:\ "saloyiana\/demo-app"/g' ${{ env.HelmchartPath }}/values.yaml
           sed -i 's/tag:.*/tag:\ "${{ env.Tag }}"/g' ${{ env.HelmchartPath }}/values.yaml
           
       - name: GIT commit and push all changed files
