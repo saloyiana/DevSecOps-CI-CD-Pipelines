@@ -89,14 +89,19 @@ jobs:
           trivy image --exit-code 1 --severity HIGH,CRITICAL ${{ env.Image }}:${{ env.Tag }}     
   
       # Manifests scan
-      - name: manifests scan
-        run: |
-          echo "install checkov"
-          pip3 install checkov
-          echo "scan"
-          helm template ${{ env.HelmchartPath }} > for-checkov-scan.yaml   
-          checkov -f for-checkov-scan.yaml --framework kubernetes --check MEDIUM --check HIGH  
-
+#       - name: manifests scan
+#         run: |
+#           echo "install checkov"
+#           pip3 install checkov
+#           echo "scan"
+#           helm template ${{ env.HelmchartPath }} > for-checkov-scan.yaml   
+#           checkov -f for-checkov-scan.yaml --framework kubernetes --check MEDIUM --check HIGH  
+      - name: Run Checkov action
+        id: checkov
+        uses: bridgecrewio/checkov-action@master
+        with:
+          directory: ${{ env.HelmchartPath }}
+          framework: kubernetes
       # Sign image prepration
       - name: upload key
         run: |
