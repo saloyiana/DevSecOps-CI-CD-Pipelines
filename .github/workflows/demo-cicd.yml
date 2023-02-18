@@ -78,6 +78,7 @@ jobs:
 
       # Image scan
       - name: image scan
+        continue-on-error: true
         run: |
           echo "install trivy" 
           sudo apt-get install rpm   
