@@ -97,10 +97,10 @@ jobs:
         continue-on-error: true
         
       # Sign image prepration
-      - name: upload key
-        run: |
-          docker login -u -p 
-          docker push -t ${{ env.Image }}:${{ env.Tag }}
+#       - name: upload key
+#         run: |
+#           docker login -u -p 
+#           docker push -t ${{ env.Image }}:${{ env.Tag }}
   
       # Docker login
       - name: Log in to Docker Hub
