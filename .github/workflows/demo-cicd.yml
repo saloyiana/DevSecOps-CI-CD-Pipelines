@@ -74,7 +74,7 @@ jobs:
       - name: build image
         run: |
           pwd
-          docker build -f Dockerfile -t ${{ env.Image }}:${{ env.Tag }} $GITHUB_WORKSPACE/app/
+          docker build -f $GITHUB_WORKSPACE/app/Dockerfile -t ${{ env.Image }}:${{ env.Tag }} $GITHUB_WORKSPACE/app/
 
       # Image scan
       - name: image scan
