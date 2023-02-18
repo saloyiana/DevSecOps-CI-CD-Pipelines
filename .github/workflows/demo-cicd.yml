@@ -128,9 +128,10 @@ jobs:
 
       - name: update tag
         run: |
-          sed -i 's/repository:.*/repository:\ ${{ env.Image }}/' ${{ env.HelmchartPath }}/values.yaml
-          sed -i 's/tag:.*/tag:\ "${{ env.Tag }}"/' ${{ env.HelmchartPath }}/values.yaml
-          
+          find . -name "*" -exec sed -i "s/repository:.*/repository:\ ${{ env.Image }}/g" {} +
+          # sed -i 's/repository:.*/repository:\ ${{ env.Image }}/' ${{ env.HelmchartPath }}/values.yaml
+          # sed -i 's/tag:.*/tag:\ "${{ env.Tag }}"/' ${{ env.HelmchartPath }}/values.yaml
+    
       - name: GIT commit and push all changed files
         env: 
           CI_COMMIT_MESSAGE: release with tag ${{ env.Tag }}
