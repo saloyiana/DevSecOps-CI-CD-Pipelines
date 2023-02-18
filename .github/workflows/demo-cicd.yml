@@ -95,8 +95,7 @@ jobs:
           pip3 install checkov
           echo "scan"
           helm template ${{ env.HelmchartPath }} > for-checkov-scan.yaml   
-          checkov -f for-checkov-scan.yaml --framework kubernetes --check MEDIUM --check HIGH --exit-code 0   
-          checkov -f for-checkov-scan.yaml --framework kubernetes --check MEDIUM --check HIGH --exit-code 1    
+          checkov -f for-checkov-scan.yaml --framework kubernetes --check MEDIUM --check HIGH  
 
       # Sign image prepration
       - name: upload key
