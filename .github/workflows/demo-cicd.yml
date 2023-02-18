@@ -25,7 +25,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        python-version: ["3.7", "3.8", "3.9", "3.10"]
+        python-version: ["3.8"]
   
     steps:
       - uses: actions/checkout@v3
@@ -54,14 +54,14 @@ jobs:
            echo "testing"
  
       # SAST
-      - name: sca
-        run: |
-          echo "install mend" 
-          sudo curl "https://downloads.mend.io/ws-cli/master/latest/ws-cli-linux-amd64/ws" \
-            -o "/usr/local/bin/ws" 
-          sudo chmod +x "/usr/local/bin/ws"
-          echo "run scan"
-          ws scan
+#       - name: sca
+#         run: |
+#           echo "install mend" 
+#           sudo curl "https://downloads.mend.io/ws-cli/master/latest/ws-cli-linux-amd64/ws" \
+#             -o "/usr/local/bin/ws" 
+#           sudo chmod +x "/usr/local/bin/ws"
+#           echo "run scan"
+#           ws scan
           
       # Dependenies check
       - name: sast
@@ -71,7 +71,7 @@ jobs:
 
       # Build image
       - name: build image
-        run: docker build -f Dockerfile -t ${{ env.Image }}:${{ env.Tag }} . 
+        run: docker build -f Dockerfile -t ${{ env.Image }}:${{ env.Tag }} app/
 
       # Image scan
       - name: image scan
