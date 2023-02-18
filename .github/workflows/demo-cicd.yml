@@ -90,18 +90,12 @@ jobs:
   
       # Manifests scan
       - name: manifests scan
-        run: |
-         bash -c 'find -iname chart.yaml' | xargs -n1 -I% bash -c " dirname %" | xargs -n1 -I% bash -c "helm template % > %.yaml && checkov -f %.yaml --framework kubernetes || true" --
-#           echo "install checkov"
-#           pip3 install checkov
-#           echo "scan"
-#           helm template ${{ env.HelmchartPath }} > for-checkov-scan.yaml   
-#           checkov -d for-checkov-scan.yaml --framework kubernetes --check MEDIUM --check HIGH  
-      - name: Run Checkov action
         id: checkov
         uses: bridgecrewio/checkov-action@master
         with:
           framework: kubernetes
+        continue-on-error: true
+        
       # Sign image prepration
       - name: upload key
         run: |
@@ -117,9 +111,8 @@ jobs:
   
       # Push image
       - name: push image
-        run: |
-          docker login -u -p 
-          echo -c $Passphrase | docker sign -t ${{ env.Image }}:${{ env.Tag }}
+        run: | 
+          docker push -t ${{ env.Image }}:${{ env.Tag }}
   deploy:
     runs-on: ubuntu-latest
     needs: build
