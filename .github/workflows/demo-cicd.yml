@@ -150,8 +150,10 @@ jobs:
         env: 
           CI_COMMIT_MESSAGE: release with tag ${{ env.Tag }}
         run: |
-          git config --local user.email "test@github.com"
-          git config --local user.name "ci/cd"
+          # git config --local user.email "test@github.com"
+          # git config --local user.name "ci/cd"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
           git commit -a -m "${{ env.CI_COMMIT_MESSAGE }}"
           echo ${{ github.ref }}
       - name: Push changes
@@ -179,4 +181,4 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.PAT }}
-          branch: prod-env
+          branch: refs/heads/prod-env
