@@ -109,10 +109,19 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
   
-      # Push image
-      - name: push image
-        run: | 
-          docker push ${{ env.Image }}:${{ env.Tag }}
+#       # Push image
+#       - name: push image
+#         run: | 
+#           docker push ${{ env.Image }}:${{ env.Tag }}
+    
+      - name: docker-sign
+        uses: sudo-bot/action-docker-sign@latest
+        with:
+          image-ref: ${{ env.Image }}:${{ env.Tag }}
+          private-key-id: ${{ secrets.PRIVATE_KEY_ID }}
+          private-key: ${{ secrets.PRIVATE_KEY }}
+          private-key-passphrase: ${{ secrets.PRIVATE_KEY_PASSPHRASE }}
+
   deploy:
     runs-on: ubuntu-latest
     needs: build
@@ -138,7 +147,8 @@ jobs:
         run: |
           git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
           git config --global user.email "username@users.noreply.github.com"
-          git checkout origin/test-env
+          git branch
+          git checkout test-env
           git add ${{ env.HelmchartPath }}/values.yaml
           git commit -m "${{ env.CI_COMMIT_MESSAGE }}"
           git push
@@ -167,7 +177,7 @@ jobs:
         run: |
           git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
           git config --global user.email "username@users.noreply.github.com"
-          git checkout origin/prod-env
+          git checkout prod-env
           git add ${{ env.HelmchartPath }}/values.yaml
           git commit -m "${{ env.CI_COMMIT_MESSAGE }}"
           git push
