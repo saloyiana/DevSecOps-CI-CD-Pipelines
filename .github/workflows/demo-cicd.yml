@@ -14,7 +14,7 @@ on:
 
 env:
   Image: 'saloyiana/demo-app'
-  Tag: 'v1.0.0'
+  Tag: '${{github.run_number}}'
   ProjectName: 'demo-app'
   HelmchartPath: '$GITHUB_WORKSPACE/chart/demo-app'
 
@@ -146,32 +146,19 @@ jobs:
           sed -i 's/repository:.*/repository:\ "saloyiana\/demo-app"/g' ${{ env.HelmchartPath }}/values.yaml
           sed -i 's/tag:.*/tag:\ "${{ env.Tag }}"/g' ${{ env.HelmchartPath }}/values.yaml
 
-      - name: Commit files
+      - name: commit changes
+        env: 
+          CI_COMMIT_MESSAGE: release with tag ${{ env.Tag }}
         run: |
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git config --local user.name "github-actions[bot]"
-          git commit -a -m "Add changes"
+          git config --local user.name "cd/cd"
+          git commit -a -m "${{ env.CI_COMMIT_MESSAGE }}"
     
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.PAT }}
           branch: test-env
-
-      - name: GIT commit and push all changed files
-        env: 
-          CI_COMMIT_MESSAGE: release with tag ${{ env.Tag }}
-          CI_COMMIT_AUTHOR: CI/CD
-        run: |
-          git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
-          git config --global user.email "username@users.noreply.github.com"
-          git remote set-url --push origin https://saloyiana:$GITHUB_TOKEN@github.com/DevSecOps-CI-CD-Pipelines          
-          git branch
-          git pull origin test-env
-          git branch
-          git add ${{ env.HelmchartPath }}/values.yaml
-          git commit -m "${{ env.CI_COMMIT_MESSAGE }}"
-          git push -u origin test-env
 
       # DAST
       - name: dast
@@ -185,19 +172,9 @@ jobs:
 #         run: |
 #           helm upgarde --wait --install ${{ env.ProjectName }} ${{ env.HelmchartPath }} \
 #             --set image=${{ env.Image }} --set image.tag=${{ env.Tag }} -n prod-env 
-      - name: update tag
-        run: |
-          sed -i 's/repository:.*/repository:\ "saloyiana\/demo-app"/g' ${{ env.HelmchartPath }}/values.yaml
-          sed -i 's/tag:.*/tag:\ "${{ env.Tag }}"/g' ${{ env.HelmchartPath }}/values.yaml
-          
-      - name: GIT commit and push all changed files
-        env: 
-          CI_COMMIT_MESSAGE: release with tag ${{ env.Tag }}
-          CI_COMMIT_AUTHOR: Continuous Integration
-        run: |
-          git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
-          git config --global user.email "username@users.noreply.github.com"
-          git checkout prod-env
-          git add ${{ env.HelmchartPath }}/values.yaml
-          git commit -m "${{ env.CI_COMMIT_MESSAGE }}"
-          git push
+
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.PAT }}
+          branch: prod-env
