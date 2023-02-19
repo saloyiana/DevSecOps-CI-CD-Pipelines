@@ -153,12 +153,12 @@ jobs:
           git config --local user.email "test@github.com"
           git config --local user.name "ci/cd"
           git commit -a -m "${{ env.CI_COMMIT_MESSAGE }}"
-    
+          echo ${{ github.ref }}
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.PAT }}
-          branch: test-env
+          branch: origin/test-env
 
       # DAST
       - name: dast
