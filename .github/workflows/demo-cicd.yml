@@ -137,11 +137,27 @@ jobs:
 #           helm upgarde --wait --install ${{ env.ProjectName }} ${{ env.HelmchartPath }} \
 #             --set image=${{ env.Image }} --set image.tag=${{ env.Tag }} -n test-env 
 
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false # otherwise, the token used is the GITHUB_TOKEN, instead of your personal access token.
+          fetch-depth: 0 # otherwise, there would be errors pushing refs to the destination repository.
       - name: update tag
         run: |
           sed -i 's/repository:.*/repository:\ "saloyiana\/demo-app"/g' ${{ env.HelmchartPath }}/values.yaml
           sed -i 's/tag:.*/tag:\ "${{ env.Tag }}"/g' ${{ env.HelmchartPath }}/values.yaml
+
+      - name: Commit files
+        run: |
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -a -m "Add changes"
     
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.PAT }}
+          branch: test-env
+
       - name: GIT commit and push all changed files
         env: 
           CI_COMMIT_MESSAGE: release with tag ${{ env.Tag }}
