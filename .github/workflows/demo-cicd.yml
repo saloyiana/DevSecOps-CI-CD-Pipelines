@@ -14,7 +14,7 @@ on:
 
 env:
   Image: 'saloyiana/demo-app'
-  Tag: '${{github.run_number}}'
+  Tag: 'v1.0.${{github.run_number}}'
   ProjectName: 'demo-app'
   HelmchartPath: '$GITHUB_WORKSPACE/chart/demo-app'
 
