@@ -142,36 +142,21 @@ jobs:
           sed -i 's/repository:.*/repository:\ "saloyiana\/demo-app"/g' ${{ env.HelmchartPath }}/values.yaml
           sed -i 's/tag:.*/tag:\ "${{ env.Tag }}"/g' ${{ env.HelmchartPath }}/values.yaml
     
-#       - name: GIT commit and push all changed files
-#         env: 
-#           CI_COMMIT_MESSAGE: release with tag ${{ env.Tag }}
-#           CI_COMMIT_AUTHOR: Continuous Integration
-#         run: |
-#           git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
-#           git config --global user.email "username@users.noreply.github.com"
-#           git branch
-#           git pull origin test-env
-#           git branch
-#           git checkout -b test-env
-#           git add ${{ env.HelmchartPath }}/values.yaml
-#           git commit -m "${{ env.CI_COMMIT_MESSAGE }}"
-#           git push -u origin test-env
-
-      - name: Git Commit/Push Changes
-        # You may pin to the exact commit or the version.
-        # uses: actions-x/commit@803b20e5b72c0425eb7919c42c321e67c5bc5d2d
-        uses: actions-x/commit@v6
-        with:
-          # The committer's email address
-          email: ${{ github.actor }}@localhost
-          # The committer's name
-          name: ${{ github.actor }}
-          # The commit message
-          message: release with tag ${{ env.Tag }}
-          # The branch to push the changes back to, defaults to the current branch
-          branch: test-env
-          # The files to add separated by space, defaults to every file
-          files: ${{ env.HelmchartPath }}/values.yaml
+      - name: GIT commit and push all changed files
+        env: 
+          CI_COMMIT_MESSAGE: release with tag ${{ env.Tag }}
+          CI_COMMIT_AUTHOR: CI/CD
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config --global user.name "${{ env.CI_COMMIT_AUTHOR }}"
+          git config --global user.email "username@users.noreply.github.com"
+          git remote set-url --push origin https://saloyiana:${{ env.GITHUB_TOKEN }}@github.com/DevSecOps-CI-CD-Pipelines          
+          git branch
+          git pull origin test-env
+          git branch
+          git add ${{ env.HelmchartPath }}/values.yaml
+          git commit -m "${{ env.CI_COMMIT_MESSAGE }}"
+          git push -u origin test-env
 
       # DAST
       - name: dast
