@@ -150,9 +150,8 @@ jobs:
         env: 
           CI_COMMIT_MESSAGE: release with tag ${{ env.Tag }}
         run: |
-          git config --global user.email "test@github.com"
-          git config --global user.name "ci/cd"
-          git pull origin test-env
+          git config --local user.email "test@github.com"
+          git config --local user.name "ci/cd"
           git commit -a -m "${{ env.CI_COMMIT_MESSAGE }}"
     
       - name: Push changes
