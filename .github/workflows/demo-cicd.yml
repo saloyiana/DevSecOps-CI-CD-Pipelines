@@ -157,9 +157,10 @@ jobs:
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
+          force: true
           github_token: ${{ secrets.PAT }}
-          branch: test-env
-#           branch: refs/heads/test-env
+#           branch: test-env
+          branch: refs/heads/test-env
 
       # DAST
       - name: dast
