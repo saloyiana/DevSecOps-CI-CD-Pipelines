@@ -148,7 +148,6 @@ jobs:
           git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git commit -a -m "${{ env.CI_COMMIT_MESSAGE }}"
-          echo ${{ github.ref }}
   
       - name: Push changes
         uses: ad-m/github-push-action@master
@@ -181,7 +180,27 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
-      
+
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false 
+          fetch-depth: 0 
+          
+      - name: update tag
+        run: |
+          sed -i 's/repository:.*/repository:\ "saloyiana\/demo-app"/g' ${{ env.HelmchartPath }}/values.yaml
+          sed -i 's/tag:.*/tag:\ "${{ env.Tag }}"/g' ${{ env.HelmchartPath }}/values.yaml
+
+      - name: update tag
+        env: 
+          CI_COMMIT_MESSAGE: release with tag ${{ env.Tag }}
+        run: |
+          # git config --local user.email "test@github.com"
+          # git config --local user.name "ci/cd"
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git commit -a -m "${{ env.CI_COMMIT_MESSAGE }}"
+    
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
