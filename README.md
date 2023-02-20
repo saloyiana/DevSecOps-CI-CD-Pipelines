@@ -54,6 +54,10 @@ helm template $HelmChartPath > for-checkov-scan.yaml
 checkov -f for-checkov-scan.yaml --framework kubernetes --check MEDIUM --check HIGH --exit-code 0   
 checkov -f for-checkov-scan.yaml --framework kubernetes --check MEDIUM --check HIGH --exit-code 1    
 ```    
+# Sample Output
+- Contianer Image Sacn
+- K8s Manifests Sacn
+- Contianer Image Sign
 
 # References
 - https://digitalvarys.com/approaches-to-automate-security-testing-in-cicd-pipelines/   
