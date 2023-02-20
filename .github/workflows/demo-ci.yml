@@ -68,7 +68,7 @@ jobs:
         uses: AppThreat/sast-scan-action@1.0.2
         
   container_image:
-    name: container-image
+    name: container image
     needs: scan
     runs-on: ubuntu-latest
     steps:
@@ -116,7 +116,7 @@ jobs:
           private-key-passphrase: ${{ secrets.PRIVATE_KEY_PASSPHRASE }}
           
   deploy_to_test:
-    name: deploy_to_test
+    name: deploy to test
     needs: container_image
     runs-on: ubuntu-latest
     steps:
@@ -174,7 +174,7 @@ jobs:
 #             --set image=${{ env.Image }} --set image.tag=${{ env.Tag }} -n prod-env 
 
   deploy_to_prod:
-    name: deploy_to_prod
+    name: deploy to prod
     needs: test
     runs-on: ubuntu-latest
     steps:
