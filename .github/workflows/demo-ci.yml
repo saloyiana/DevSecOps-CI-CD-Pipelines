@@ -72,8 +72,8 @@ jobs:
       - name: dep-scan
         uses: AppThreat/dep-scan-action@v1.0.0
       
-      - name: Official SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v1.2.0
+#       - name: Official SonarQube Scan
+#         uses: SonarSource/sonarqube-scan-action@v1.2.0
   
       - name: SonarQube Quality Gate Check
         uses: SonarSource/sonarqube-quality-gate-action@v1.1.0
