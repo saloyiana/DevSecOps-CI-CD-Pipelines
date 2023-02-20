@@ -26,6 +26,7 @@ jobs:
       matrix:
         python-version: ["3.8"]
     steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
 
       - name: Set up Python ${{ matrix.python-version }}
@@ -57,7 +58,8 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-    
+      - uses: actions/checkout@v3
+      
       # SAST & SCA
       - name: dep-scan
         uses: AppThreat/dep-scan-action@v1.0.0
@@ -70,7 +72,9 @@ jobs:
     needs: scan
     runs-on: ubuntu-latest
     steps:
-    
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+      
       # Build image
       - name: build image
         run: 
@@ -175,6 +179,9 @@ jobs:
     needs: test
     runs-on: ubuntu-latest
     steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v3
+      
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
