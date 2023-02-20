@@ -2,7 +2,6 @@
 
 name: Demo
 
-# Controls when the workflow will run
 on:
 #   # Auto Triggers
 #   push:
@@ -18,7 +17,6 @@ env:
   ProjectName: 'demo-app'
   HelmchartPath: '$GITHUB_WORKSPACE/chart/demo-app'
 
-
 jobs:
   # This workflow contains a single job called "build"
   build:
@@ -27,11 +25,8 @@ jobs:
     strategy:
       matrix:
         python-version: ["3.8"]
-  
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 0
 
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v4
@@ -44,46 +39,41 @@ jobs:
           pip install flake8 pytest
           if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
-        #  to lint code
+        #  To lint code
+        
 #       - name: Lint with flake8
 #         run: |
 #           # stop the build if there are Python syntax errors or undefined names
 #           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
 #           # exit-zero treats all errors as warnings. The GitHub editor is 127 chars wide
 #           flake8 . --count --exit-zero --max-complexity=10 --max-line-length=127 --statistics
+
       - name: Test with pytest
         run: |
           # pytest
            echo "testing"
- 
-      # SAST
-#       - name: sca
-#         run: |
-#           echo "install mend" 
-#           sudo curl "https://downloads.mend.io/ws-cli/master/latest/ws-cli-linux-amd64/ws" \
-#             -o "/usr/local/bin/ws" 
-#           sudo chmod +x "/usr/local/bin/ws"
-#           echo "run scan"
-#           ws scan
-
-#       - name: WhiteSource CI integration
-#         uses: Idancc/WhiteSource-CI-Integration@v2.6
-        
+  scan:
+    name: scan
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    
+      # SAST & SCA
       - name: dep-scan
         uses: AppThreat/dep-scan-action@v1.0.0
 
       - name: sast-scan
         uses: AppThreat/sast-scan-action@1.0.2
+        
+  container_image:
+    name: container-image
+    needs: scan
+    runs-on: ubuntu-latest
+    steps:
     
-      - name: sast
-        run: |
-          echo "we can use sonarqube" 
-          echo "for more security" 
-
       # Build image
       - name: build image
-        run: |
-          pwd
+        run: 
           docker build -f $GITHUB_WORKSPACE/app/Dockerfile -t ${{ env.Image }}:${{ env.Tag }} $GITHUB_WORKSPACE/app/
 
       # Image scan
@@ -120,10 +110,11 @@ jobs:
           private-key-id: ${{ secrets.PRIVATE_KEY_ID }}
           private-key: ${{ secrets.PRIVATE_KEY }}
           private-key-passphrase: ${{ secrets.PRIVATE_KEY_PASSPHRASE }}
-
-  deploy:
+          
+  deploy_to_test:
+    name: deploy_to_test
+    needs: container_image
     runs-on: ubuntu-latest
-    needs: build
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
@@ -161,7 +152,11 @@ jobs:
           github_token: ${{ secrets.PAT }}
           branch: test-env
           force: true
-
+  test:
+    name: test
+    needs: deploy_to_test
+    runs-on: ubuntu-latest
+    steps:
       # DAST
       - name: dast
         run: echo "run dast" 
@@ -175,6 +170,11 @@ jobs:
 #           helm upgarde --wait --install ${{ env.ProjectName }} ${{ env.HelmchartPath }} \
 #             --set image=${{ env.Image }} --set image.tag=${{ env.Tag }} -n prod-env 
 
+  deploy_to_prod:
+    name: deploy_to_prod
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
