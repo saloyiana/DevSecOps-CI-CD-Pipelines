@@ -19,9 +19,9 @@ DevSecOps—short for development, security, and operations—automates the i
 sudo curl "https://downloads.mend.io/ws-cli/master/latest/ws-cli-linux-amd64/ws" \
    -o "/usr/local/bin/ws" \
      sudo chmod +x "/usr/local/bin/ws"
-```
+```   
+*after preparing the required configuration as described [here](https://docs.mend.io/en-US/bundle/sca_user_guide/page/mend_cli.html)*    
 - **Run the scan aginst default polices:**
-   *after preparing the required configuration as described [here](https://docs.mend.io/en-US/bundle/sca_user_guide/page/mend_cli.html)*   
 ```
 # In the root directory of your project:     
 ws scan
