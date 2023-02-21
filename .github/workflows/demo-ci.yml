@@ -98,10 +98,11 @@ jobs:
       - name: manifests scan
         id: checkov
         uses: bridgecrewio/checkov-action@master
-        with:
-          directory: ${{ env.HelmchartPath }}
+        with:      
+          directory: ${{ format('{0}/chart/app/') }}
           framework: kubernetes
         continue-on-error: true
+
       - name: test
         run: ls
       # Docker login
