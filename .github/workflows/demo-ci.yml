@@ -3,11 +3,11 @@
 name: Demo
 
 on:
-#   # Auto Triggers
-  push:
-    branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
+# #   # Auto Triggers
+#   push:
+#     branches: [ "main" ]
+#   pull_request:
+#     branches: [ "main" ]
   # Manual Trigger
   workflow_dispatch:
 
