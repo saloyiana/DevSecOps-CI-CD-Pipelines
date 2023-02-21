@@ -20,12 +20,12 @@ sudo curl "https://downloads.mend.io/ws-cli/master/latest/ws-cli-linux-amd64/ws"
    -o "/usr/local/bin/ws" \
      sudo chmod +x "/usr/local/bin/ws"
 ```
-- **Run the scan aginst default polices:**    
+- **Run the scan aginst default polices:**
+   *after preparing the required configuration as described [here](https://docs.mend.io/en-US/bundle/sca_user_guide/page/mend_cli.html)*   
 ```
 # In the root directory of your project:     
 ws scan
 ```
-
 ## Image Sacn - 'trivy'   
 - **Install the tool**      
 ```
@@ -51,13 +51,39 @@ trivy image --exit-code 1 --severity HIGH,CRITICAL $Image:$Tag
 - **Run the scan aginst default polices:**      
 ```
 helm template $HelmChartPath > for-checkov-scan.yaml   
-checkov -f for-checkov-scan.yaml --framework kubernetes --check MEDIUM --check HIGH --exit-code 0   
-checkov -f for-checkov-scan.yaml --framework kubernetes --check MEDIUM --check HIGH --exit-code 1    
+checkov -f for-checkov-scan.yaml --framework kubernetes --check MEDIUM --check HIGH      
 ```    
 # Sample Output
-- Contianer Image Sacn
-- K8s Manifests Sacn
-- Contianer Image Sign
+- Full Cycle implementation using **github actions**  
+<img src="https://github.com/saloyiana/DevSecOps-CI-CD-Pipelines/blob/main/images/example-pipeline-githubactions.png" width="800">   
+
+- Scan code phase   
+<img src="https://github.com/saloyiana/DevSecOps-CI-CD-Pipelines/blob/main/images/scan-code-phase.png" width="800">  
+
+- SCA using [appthreat](https://github.com/AppThreat)   
+<img src="https://github.com/saloyiana/DevSecOps-CI-CD-Pipelines/blob/main/images/scan-code-sca.png" width="800">   
+
+- SAST using [appthreat](https://github.com/AppThreat)   
+<img src="https://github.com/saloyiana/DevSecOps-CI-CD-Pipelines/blob/main/images/scan-code-sast.png" width="800">
+
+- Container image phase   
+<img src="https://github.com/saloyiana/DevSecOps-CI-CD-Pipelines/blob/main/images/container-image-phase.png" width="800">   
+
+- Contianer image sacn usning [trivy](https://trivy.dev/)   
+<img src="https://github.com/saloyiana/DevSecOps-CI-CD-Pipelines/blob/main/images/scan-container-image.png" width="800">   
+
+- K8s manifests sacn usning [checkov](https://github.com/marketplace/actions/checkov-github-action)   
+<img src="https://github.com/saloyiana/DevSecOps-CI-CD-Pipelines/blob/main/images/scan-k8s-manifest.png" width="800">   
+
+- Contianer image sign using [docker-sign](https://github.com/marketplace/actions/docker-sign)   
+<img src="https://github.com/saloyiana/DevSecOps-CI-CD-Pipelines/blob/main/images/sign-push-container-image.png" width="800">   
+
+# Notes
+To reuse the provided example:    
+1. clone the repo - main branch.   
+2. update the variables to match your needs.   
+3. push to your workspace.    
+4. check out your workflow.   
 
 # References
 - https://digitalvarys.com/approaches-to-automate-security-testing-in-cicd-pipelines/   
