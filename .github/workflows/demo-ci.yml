@@ -16,6 +16,7 @@ env:
   Tag: 'v1.0.${{github.run_number}}'
   ProjectName: 'demo-app'
   HelmchartPath: '$GITHUB_WORKSPACE/chart/demo-app'
+  DockerfilePath: '$GITHUB_WORKSPACE/app/Dockerfile'
 
 jobs:
   # This workflow contains a single job called "build"
@@ -78,7 +79,7 @@ jobs:
       # Build image
       - name: build image
         run: 
-          docker build -f $GITHUB_WORKSPACE/app/Dockerfile -t ${{ env.Image }}:${{ env.Tag }} $GITHUB_WORKSPACE/app/
+          docker build -f ${{ env.DockerfilePath }} -t ${{ env.Image }}:${{ env.Tag }} $GITHUB_WORKSPACE/app/
 
       # Image scan
       - name: image scan
@@ -97,6 +98,7 @@ jobs:
         id: checkov
         uses: bridgecrewio/checkov-action@master
         with:
+          directory: ${{ env.HelmchartPath }}
           framework: kubernetes
         continue-on-error: true
         
