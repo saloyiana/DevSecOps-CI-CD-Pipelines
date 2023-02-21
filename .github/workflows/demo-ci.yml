@@ -4,10 +4,10 @@ name: Demo
 
 on:
 #   # Auto Triggers
-#   push:
-#     branches: [ "main" ]
-#   pull_request:
-#     branches: [ "main" ]
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
   # Manual Trigger
   workflow_dispatch:
 
@@ -92,7 +92,8 @@ jobs:
           echo "run scan" 
           trivy image --exit-code 0 --severity LOW,MEDIUM ${{ env.Image }}:${{ env.Tag }}    
           trivy image --exit-code 1 --severity HIGH,CRITICAL ${{ env.Image }}:${{ env.Tag }}     
-  
+ 
+      - uses: actions/checkout@v3
       # Manifests scan
       - name: manifests scan
         id: checkov
@@ -101,7 +102,8 @@ jobs:
           directory: ${{ env.HelmchartPath }}
           framework: kubernetes
         continue-on-error: true
-        
+      - name: test
+        run: ls
       # Docker login
       - name: Log in to Docker Hub
         uses: docker/login-action@f054a8b539a109f9f41c372932f1ae047eff08c9
